@@ -3,7 +3,7 @@
 ---
 
 ```pwsh
-$ py -m pip install Flask python-dotenv requests xmljson
+$ py -m pip install Flask python-dotenv requests xmljson tqdm
 $ py .\app.py
 ```
 
