@@ -13,6 +13,8 @@ import math
 import re
 import time
 
+import os
+
 
 # Init
 app = Flask(__name__)
@@ -41,6 +43,17 @@ def generate():
         yield (parsed_text + '\n')
 
 
+def generate2(start, stop):
+    for page in range(int(start), int(stop)):
+        uri = htb.BASE_URI + str(page)
+        page_content = htb.get_rss_file(uri)
+        parsed_text = htb.json2ndjson(
+            htb.parse_rss_items(page_content))
+        with open('output.ndjson', 'a') as file:
+            file.write(parsed_text)
+        yield (parsed_text + '\n')
+
+
 @app.route('/user/<name>')
 def user(name=None):
     # [A-Za-z0-9\-\_]
@@ -57,6 +70,11 @@ def user(name=None):
 @app.route('/me')
 def generate_large_data():
     return Response(generate(), mimetype='text/plain')
+
+
+@app.route('/me/<start>/<stop>')
+def generate_large_data2(start, stop):
+    return Response(generate2(start, stop), mimetype='text/plain')
 
 
 if __name__ == "__main__":
